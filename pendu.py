@@ -30,7 +30,7 @@ def fenetre():
     ltr.focus()
     Label(windows, text="Votre proposition", width=30).grid(row=2, column=1)
     chercher = Button(windows, text="chercher", command=affichage)
-    chercher.grid(row=2,column=2)
+    chercher.grid(row=2, column=2)
     Label(windows, textvariable=resultat, width=60).grid(row=3, columnspan=3)
     dessin = Canvas(windows, width=100, height=100, borderwidth=5, background="#E4E4E4")
     dessin.grid(row=0, column=3, rowspan=4)
@@ -82,7 +82,7 @@ def affichage(ev=None):
         lettreabsente.append(lettredonnee.get())     # on ajoute la lettre absente
         nbrvie -= 1                                  # on retire une vie
         if nbrvie > 0:                               # si assez de vie...
-            resultat.set(f"Raté, il n'y a pas ces lettres {lettreabsente}. Il vous reste {nbrvie} vie(s)")
+            resultat.set(f"Raté, il n'y a pas ces lettres : {', '.join(lettreabsente)}. Il vous reste {nbrvie} vie(s)")
         else:                                        # sinon c'est perdu
             resultat.set(f"perdu, vous n'avez plus de vie. Le mot était {lebonmot}")
     else:                                            # si lettre presente
@@ -115,15 +115,15 @@ def pendu():
         dessin.create_line(50, 20, 50, 30)
     elif nbrvie == 5:
         dessin.create_oval(45, 30, 55, 40)
-    if nbrvie == 4:
+    elif nbrvie == 4:
         dessin.create_line(50, 40, 50, 65)
-    if nbrvie == 3:
+    elif nbrvie == 3:
         dessin.create_line(50, 40, 40, 50)
-    if nbrvie == 2:
+    elif nbrvie == 2:
         dessin.create_line(50, 40, 60, 50)
-    if nbrvie == 1:
+    elif nbrvie == 1:
         dessin.create_line(50, 65, 40, 75)
-    if nbrvie == 0:
+    elif nbrvie == 0:
         dessin.create_line(50, 65, 60, 75)
 
 
