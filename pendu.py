@@ -129,7 +129,7 @@ def pendu():
 
 def createmot():
     global lebonmot
-    # chargement du mot du dico
+    # chargement du mot du dictionnaire
     dic = load_dictionnary()
     leMots = pick_a_word(6, dic)
     lebonmot = ''.join((c for c in unicodedata.normalize('NFD', leMots) if unicodedata.category(c) != 'Mn'))
