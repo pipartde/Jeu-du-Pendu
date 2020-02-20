@@ -93,6 +93,8 @@ def affichage(ev=None):
                     resultat.set(f"Raté, il n'y a pas ces lettres : {', '.join(lettreabsente)}. Il vous reste {nbrvie} vie(s)")
                 else:                                        # sinon c'est perdu
                     resultat.set(f"perdu, vous n'avez plus de vie. Le mot était {lebonmot}")
+                    chercher.config(state='disabled')
+                    ltr.config(state='disabled')
         else:                                            # si lettre presente
             for i in trouverposition():                  # on ajoute la lettre
                 motaafficher[i] = lettreproposee.get()
@@ -147,9 +149,18 @@ def createmot():
     print(lebonmot)
 
 
-def nouveaujeu(ev=None):    #trouver une manière moins barbare de tout reset...
-    windows.destroy()
-    fenetre()
+def nouveaujeu(ev=None):
+    global motaafficher, lettreabsente, nbrvie
+    motaafficher = ["_", "_", "_", "_", "_", "_"]
+    lettreabsente = []
+    nbrvie = 10
+    motatrouver.set(motaafficher)
+    createmot()
+    resultat.set("")
+    chercher.config(state='normal')
+    ltr.config(state='normal')
+    for i in dessin.find_all():
+        dessin.delete(i)
 
 
 if __name__ == '__main__':
