@@ -4,7 +4,7 @@ import unicodedata
 
 
 def fenetre():
-    global motatrouver, lettredonnee, resultat, lebonmot, motaafficher, lettreabsente, nbrvie, chercher, ltr, dessin, windows
+    global motatrouver, lettreproposee, resultat, lebonmot, motaafficher, lettreabsente, nbrvie, chercher, ltr, dessin, windows, accord
     windows = Tk()
     windows.title("jeu du pendu")
 
@@ -15,7 +15,7 @@ def fenetre():
     lettreabsente = []
     nbrvie = 10
     motatrouver=StringVar()
-    lettredonnee=StringVar()
+    lettreproposee=StringVar()
     resultat=StringVar()
     motatrouver.set(motaafficher)
     createmot()
@@ -25,11 +25,11 @@ def fenetre():
 
     Label(windows, text="Mot à Trouver", width=30).grid(row=0, columnspan=3)
     Label(windows, textvariable=motatrouver, width=30).grid(row=1, columnspan=3)
-    ltr = Entry(windows, textvariable=lettredonnee, width=5)
+    ltr = Entry(windows, textvariable=lettreproposee, width=2)
     ltr.grid(row=2, column=0)
     ltr.focus()
     Label(windows, text="Votre proposition", width=30).grid(row=2, column=1)
-    chercher = Button(windows, text="chercher", command=affichage)
+    chercher = Button(windows, text="chercher", command=lambda: affichage)
     chercher.grid(row=2, column=2)
     Label(windows, textvariable=resultat, width=60).grid(row=3, columnspan=3)
     dessin = Canvas(windows, width=100, height=100, borderwidth=5, background="#E4E4E4")
@@ -37,6 +37,12 @@ def fenetre():
     windows.bind_all('<Return>', affichage)
     reset = Button(windows, text="Reset", command=nouveaujeu)
     reset.grid(row=4, column=3)
+
+
+def controle():
+    if len(lettreproposee.get()) == 1:
+        accord = True
+        return accord
 
 
 def load_dictionnary():
@@ -68,7 +74,7 @@ def pick_a_word(size, dico):
 
 def trouverposition():                  # donne la/les position(s) des lettres proposées
     position = []
-    lettre=lettredonnee.get()
+    lettre = lettreproposee.get()
     for i in range(len(lebonmot)):
         if lebonmot[i] == lettre.upper():
             position.append(i)
@@ -77,27 +83,31 @@ def trouverposition():                  # donne la/les position(s) des lettres p
 
 def affichage(ev=None):
     global nbrvie
-    motatrouver.set(motaafficher)
-    if not trouverposition():                        # si pas de lettre
-        lettreabsente.append(lettredonnee.get())     # on ajoute la lettre absente
-        nbrvie -= 1                                  # on retire une vie
-        if nbrvie > 0:                               # si assez de vie...
-            resultat.set(f"Raté, il n'y a pas ces lettres : {', '.join(lettreabsente)}. Il vous reste {nbrvie} vie(s)")
-        else:                                        # sinon c'est perdu
-            resultat.set(f"perdu, vous n'avez plus de vie. Le mot était {lebonmot}")
-    else:                                            # si lettre presente
-        for i in trouverposition():                  # on ajoute la lettre
-            motaafficher[i] = lettredonnee.get()
+    if controle():
         motatrouver.set(motaafficher)
-        count = 0
-        for i in motaafficher:
-            if i == "_":
-                count += 1
-        if count == 0:
-            resultat.set("Gagné !!")
-            chercher.config(state='disabled')
-            ltr.config(state='disabled')
-    lettredonnee.set("")
+        if not trouverposition():                        # si pas de lettre
+            if lettreproposee.get() not in lettreabsente:
+                lettreabsente.append(lettreproposee.get())     # on ajoute la lettre absente
+                nbrvie -= 1                                  # on retire une vie
+                if nbrvie > 0:                               # si assez de vie...
+                    resultat.set(f"Raté, il n'y a pas ces lettres : {', '.join(lettreabsente)}. Il vous reste {nbrvie} vie(s)")
+                else:                                        # sinon c'est perdu
+                    resultat.set(f"perdu, vous n'avez plus de vie. Le mot était {lebonmot}")
+        else:                                            # si lettre presente
+            for i in trouverposition():                  # on ajoute la lettre
+                motaafficher[i] = lettreproposee.get()
+            motatrouver.set(motaafficher)
+            count = 0
+            for i in motaafficher:
+                if i == "_":
+                    count += 1
+            if count == 0:
+                resultat.set("Gagné !!")
+                chercher.config(state='disabled')
+                ltr.config(state='disabled')
+    else:
+        resultat.set("Mauvaise entrée de données (soit trop de lettre, soit pas assez...)")
+    lettreproposee.set("")
     pendu()
 
 
